@@ -8,7 +8,7 @@ CREATE TABLE departemen (
     nama_departemen VARCHAR(100) NOT NULL
 );
 
--- Tabel users (pegawai dan admin) dengan NIP, email, no_telp
+-- Tabel users
 CREATE TABLE users (
     id INT PRIMARY KEY AUTO_INCREMENT,
     nip VARCHAR(20) UNIQUE NOT NULL,
