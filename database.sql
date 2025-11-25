@@ -64,3 +64,10 @@ INSERT INTO users (nip, password, nama_lengkap, email, no_telp, role, departemen
 ('002001', 'user2001', 'Budi Santoso', 'budi.santoso@perusahaan.com', '081234567893', 'pegawai', 2),
 ('002002', 'user2002', 'Siti Rahayu', 'siti.rahayu@perusahaan.com', '081234567894', 'pegawai', 3),
 ('002003', 'user2003', 'Dian Permata', 'dian.permata@perusahaan.com', '081234567895', 'pegawai', 4);
+INSERT INTO jenis_cuti (nama_jenis, deskripsi, maksimal_hari) VALUES 
+('Cuti Tahunan', 'Cuti tahunan yang diberikan kepada karyawan', 12),
+('Cuti Sakit', 'Cuti karena sakit dengan surat dokter', 30),
+('Cuti Melahirkan', 'Cuti untuk karyawan yang melahirkan', 90),
+('Cuti Penting', 'Cuti untuk keperluan penting keluarga', 3),
+('Cuti Bersalin', 'Cuti untuk istri yang melahirkan', 2),
+('Cuti Alasan Penting', 'Cuti karena alasan penting lainnya', 14);
