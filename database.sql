@@ -40,7 +40,7 @@ CREATE TABLE pengajuan_cuti (
     tanggal_selesai DATE NOT NULL,
     alasan TEXT NOT NULL,
     lampiran VARCHAR(255),
-    status ENUM('pending', 'disetujui', 'ditolak') DEFAULT 'pending',
+    status ENUM('draft', 'pending', 'disetujui', 'ditolak') DEFAULT 'draft',
     admin_id INT NULL,
     alasan_admin TEXT NULL,
     tanggal_disetujui TIMESTAMP NULL,
@@ -71,3 +71,4 @@ INSERT INTO jenis_cuti (nama_jenis, deskripsi, maksimal_hari) VALUES
 ('Cuti Penting', 'Cuti untuk keperluan penting keluarga', 3),
 ('Cuti Bersalin', 'Cuti untuk istri yang melahirkan', 2),
 ('Cuti Alasan Penting', 'Cuti karena alasan penting lainnya', 14);
+
