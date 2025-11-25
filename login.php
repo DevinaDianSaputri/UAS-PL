@@ -1,6 +1,16 @@
 <?php
 include 'config.php';
 
+// Jika sudah login, redirect ke dashboard
+if (isLoggedIn()) {
+    if ($_SESSION['role'] == 'admin') {
+        header("Location: admin/dashboard.php");
+    } else {
+        header("Location: pegawai/dashboard.php");
+    }
+    exit();
+}
+
 if ($_POST) {
     $nip = $_POST['nip'];
     $password_input = $_POST['password'];
@@ -18,18 +28,8 @@ if ($_POST) {
         if ($stmt->rowCount() == 1) {
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
             
-            // Cek jika password sudah di-hash atau masih plain
-            if (password_verify($password_input, $user['password']) || $user['password'] === $password_input) {
-                // Jika password masih plain, hash dan update ke database
-                if ($user['password'] === $password_input) {
-                    $hashed_password = password_hash($password_input, PASSWORD_DEFAULT);
-                    $update_sql = "UPDATE users SET password = :password WHERE id = :id";
-                    $update_stmt = $pdo->prepare($update_sql);
-                    $update_stmt->bindParam(':password', $hashed_password);
-                    $update_stmt->bindParam(':id', $user['id']);
-                    $update_stmt->execute();
-                }
-                
+            // Cek password (plain text untuk sample)
+            if ($user['password'] === $password_input) {
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['nip'] = $user['nip'];
                 $_SESSION['nama_lengkap'] = $user['nama_lengkap'];
@@ -87,6 +87,10 @@ if ($_POST) {
                             </div>
                             <button type="submit" class="btn btn-primary w-100">Login</button>
                         </form>
+                        
+                        <div class="text-center mt-3">
+                            <p>Pegawai baru? <a href="register.php">Daftar akun di sini</a></p>
+                        </div>
                     </div>
                 </div>
             </div>
