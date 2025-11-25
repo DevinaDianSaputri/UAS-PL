@@ -21,7 +21,6 @@ CREATE TABLE users (
     FOREIGN KEY (departemen_id) REFERENCES departemen(id)
 );
 
-
 -- Tabel Jenis Cuti
 CREATE TABLE jenis_cuti (
     id INT PRIMARY KEY AUTO_INCREMENT,
@@ -71,4 +70,3 @@ INSERT INTO jenis_cuti (nama_jenis, deskripsi, maksimal_hari) VALUES
 ('Cuti Penting', 'Cuti untuk keperluan penting keluarga', 3),
 ('Cuti Bersalin', 'Cuti untuk istri yang melahirkan', 2),
 ('Cuti Alasan Penting', 'Cuti karena alasan penting lainnya', 14);
-
