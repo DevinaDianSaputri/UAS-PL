@@ -29,7 +29,6 @@ CREATE TABLE jenis_cuti (
     maksimal_hari INT NOT NULL DEFAULT 0
 );
 
-
 -- Tabel pengajuan_cuti
 CREATE TABLE pengajuan_cuti (
     id INT PRIMARY KEY AUTO_INCREMENT,
