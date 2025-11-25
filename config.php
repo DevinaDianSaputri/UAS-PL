@@ -27,6 +27,10 @@ function isPegawai() {
     return isset($_SESSION['role']) && $_SESSION['role'] === 'pegawai';
 }
 
+function canRegister() {
+    return true;
+}
+
 // Memulai Sesi
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
