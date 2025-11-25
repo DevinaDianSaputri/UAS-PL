@@ -50,3 +50,17 @@ CREATE TABLE pengajuan_cuti (
     FOREIGN KEY (admin_id) REFERENCES users(id)
 );
 
+INSERT INTO departemen (nama_departemen) VALUES 
+('HRD'),
+('IT'),
+('Keuangan'),
+('Marketing'),
+('Produksi'),
+('Logistik');
+INSERT INTO users (nip, password, nama_lengkap, email, no_telp, role, departemen_id) VALUES 
+('001001', 'admin001', 'Ahmad Wijaya', 'ahmad.wijaya@perusahaan.com', '081234567890', 'admin', 1),
+('001002', 'admin002', 'Sari Dewi', 'sari.dewi@perusahaan.com', '081234567891', 'admin', 1),
+('001003', 'admin003', 'Rizki Pratama', 'rizki.pratama@perusahaan.com', '081234567892', 'admin', 1),
+('002001', 'user2001', 'Budi Santoso', 'budi.santoso@perusahaan.com', '081234567893', 'pegawai', 2),
+('002002', 'user2002', 'Siti Rahayu', 'siti.rahayu@perusahaan.com', '081234567894', 'pegawai', 3),
+('002003', 'user2003', 'Dian Permata', 'dian.permata@perusahaan.com', '081234567895', 'pegawai', 4);
