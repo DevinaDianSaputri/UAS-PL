@@ -39,13 +39,11 @@ CREATE TABLE pengajuan_cuti (
     alasan TEXT NOT NULL,
     lampiran VARCHAR(255),
     status ENUM('draft', 'pending', 'disetujui', 'ditolak') DEFAULT 'draft',
-    admin_id INT NULL,
     alasan_admin TEXT NULL,
     tanggal_disetujui TIMESTAMP NULL,
     dibuat_pada TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (jenis_cuti_id) REFERENCES jenis_cuti(id),
-    FOREIGN KEY (admin_id) REFERENCES users(id)
+    FOREIGN KEY (jenis_cuti_id) REFERENCES jenis_cuti(id)
 );
 
 INSERT INTO departemen (nama_departemen) VALUES 
