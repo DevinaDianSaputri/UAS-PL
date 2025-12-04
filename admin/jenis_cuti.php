@@ -56,9 +56,13 @@ $jenis_cuti = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <div class="container">
             <a class="navbar-brand fw-bold" href="dashboard.php">Sistem Cuti</a>
             <div class="navbar-nav ms-auto">
+                <span class="navbar-text me-3 text-white">
+                    Admin: <?php echo htmlspecialchars($_SESSION['nama_lengkap'] ?? ''); ?>
+                </span>
                 <a class="nav-link" href="dashboard.php">Dashboard</a>
-                <a class="nav-link active" href="jenis_cuti.php">Jenis Cuti</a>
-                <a class="nav-link" href="departemen.php">Departemen</a>
+                <a class="nav-link" href="jenis_cuti.php">Jenis Cuti</a>
+                <a class="nav-link active" href="departemen.php">Departemen</a>
+                <a class="nav-link" href="karyawan.php">Karyawan</a>
                 <a class="nav-link" href="../logout.php">Logout</a>
             </div>
         </div>
