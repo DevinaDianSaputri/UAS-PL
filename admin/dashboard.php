@@ -97,7 +97,7 @@ try {
                 <span class="navbar-text me-3 user-info">
                     Halo <strong><?php echo htmlspecialchars($_SESSION['nama_lengkap']); ?></strong> – Admin
                 </span>
-                <a class="nav-link text-white" href="../logout.php">Logout</a>
+                <a class="nav-link text-white" href="logout.php">Logout</a>
             </div>
         </div>
     </nav>
@@ -123,7 +123,7 @@ try {
         <!-- Menu Utama -->
         <div class="row mb-4">
             <div class="col-md-3 mb-3">
-                <a href="jenis_cuti.php" class="text-decoration-none">
+                <a href="jenis_cuti/jenis_cuti.php" class="text-decoration-none">
                     <div class="card menu-card text-center p-4">
                         <div class="menu-icon">📋</div>
                         <h5>Jenis Cuti</h5>
@@ -132,7 +132,7 @@ try {
                 </a>
             </div>
             <div class="col-md-3 mb-3">
-                <a href="departemen.php" class="text-decoration-none">
+                <a href="departemen/departemen.php" class="text-decoration-none">
                     <div class="card menu-card text-center p-4">
                         <div class="menu-icon">🏢</div>
                         <h5>Departemen</h5>
@@ -141,7 +141,7 @@ try {
                 </a>
             </div>
             <div class="col-md-3 mb-3">
-                <a href="karyawan.php" class="text-decoration-none">
+                <a href="karyawan/karyawan.php" class="text-decoration-none">
                     <div class="card menu-card text-center p-4">
                         <div class="menu-icon">👥</div>
                         <h5>Karyawan</h5>
