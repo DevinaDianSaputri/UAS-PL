@@ -68,7 +68,10 @@ $pengajuan = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     Admin: <?php echo htmlspecialchars($_SESSION['nama_lengkap']); ?>
                 </span>
                 <a class="nav-link" href="dashboard.php">Dashboard</a>
-                <a class="nav-link active" href="history.php">Histori</a>
+                <a class="nav-link" href="jenis_cuti/jenis_cuti.php">Jenis Cuti</a>
+                <a class="nav-link" href="departemen/departemen.php">Departemen</a>
+                <a class="nav-link" href="karyawan/karyawan.php">Karyawan</a>
+                <a class="nav-link active" href="histori.php">Histori</a>
                 <a class="nav-link" href="../logout.php">Logout</a>
             </div>
         </div>
