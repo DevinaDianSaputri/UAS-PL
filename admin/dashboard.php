@@ -1,4 +1,5 @@
 <?php
+session_start(); // Tambahkan ini
 include '../config.php';
 if (!isLoggedIn() || !isAdmin()) {
     header("Location: ../login.php");
@@ -102,6 +103,23 @@ try {
     </nav>
 
     <div class="container mt-4">
+        <!-- Notifikasi -->
+        <?php if (isset($_SESSION['success'])): ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <?php echo $_SESSION['success']; ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <?php unset($_SESSION['success']); ?>
+        <?php endif; ?>
+
+        <?php if (isset($_SESSION['error'])): ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <?php echo $_SESSION['error']; ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+
         <!-- Menu Utama -->
         <div class="row mb-4">
             <div class="col-md-3 mb-3">
@@ -132,7 +150,7 @@ try {
                 </a>
             </div>
             <div class="col-md-3 mb-3">
-                <a href="history.php" class="text-decoration-none">
+                <a href="histori.php" class="text-decoration-none">
                     <div class="card menu-card text-center p-4">
                         <div class="menu-icon">📊</div>
                         <h5>Histori</h5>
@@ -154,6 +172,7 @@ try {
                         <table class="table table-hover">
                             <thead>
                                 <tr>
+                                    <th>No</th>
                                     <th>Nama</th>
                                     <th>NIP</th>
                                     <th>Departemen</th>
@@ -165,28 +184,36 @@ try {
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php while ($row = $stmt_pending->fetch(PDO::FETCH_ASSOC)):
+                                <?php $no = 1; while ($row = $stmt_pending->fetch(PDO::FETCH_ASSOC)):
                                     $tanggal_mulai = new DateTime($row['tanggal_mulai']);
                                     $tanggal_selesai = new DateTime($row['tanggal_selesai']);
                                     $jumlah_hari = $tanggal_mulai->diff($tanggal_selesai)->days + 1;
                                 ?>
                                     <tr>
+                                        <td><?php echo $no++; ?></td>
                                         <td><?php echo htmlspecialchars($row['nama_lengkap']); ?></td>
                                         <td><?php echo htmlspecialchars($row['nip']); ?></td>
                                         <td><?php echo htmlspecialchars($row['nama_departemen']); ?></td>
                                         <td><?php echo htmlspecialchars($row['nama_jenis']); ?></td>
                                         <td>
-                                            <?php echo htmlspecialchars($row['tanggal_mulai']); ?><br>
-                                            <small>s/d <?php echo htmlspecialchars($row['tanggal_selesai']); ?></small>
+                                            <?php echo date('d/m/Y', strtotime($row['tanggal_mulai'])); ?><br>
+                                            <small>s/d <?php echo date('d/m/Y', strtotime($row['tanggal_selesai'])); ?></small>
                                         </td>
                                         <td><?php echo $jumlah_hari; ?> hari</td>
                                         <td>
                                             <span class="badge bg-warning status-badge">Pending</span>
                                         </td>
                                         <td class="action-buttons">
-                                            <a href="detail_pengajuan.php?id=<?php echo $row['id_pengajuan']; ?>" class="btn btn-info btn-sm">Detail</a>
-                                            <a href="approve_pengajuan.php?id=<?php echo $row['id_pengajuan']; ?>" class="btn btn-success btn-sm" onclick="return confirm('Setujui pengajuan ini?')">Setujui</a>
-                                            <a href="reject_pengajuan.php?id=<?php echo $row['id_pengajuan']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Tolak pengajuan ini?')">Tolak</a>
+                                            <a href="process_pengajuan.php?id=<?php echo $row['id_pengajuan']; ?>&action=approve" 
+                                               class="btn btn-success btn-sm" 
+                                               onclick="return confirm('Setujui pengajuan ini?')">
+                                                Setujui
+                                            </a>
+                                            <a href="process_pengajuan.php?id=<?php echo $row['id_pengajuan']; ?>&action=reject" 
+                                               class="btn btn-danger btn-sm" 
+                                               onclick="return confirm('Tolak pengajuan ini?')">
+                                                Tolak
+                                            </a>
                                         </td>
                                     </tr>
                                 <?php endwhile; ?>
@@ -202,5 +229,4 @@ try {
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>
