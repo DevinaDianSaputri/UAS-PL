@@ -137,12 +137,6 @@ $departemen = $stmt_dept->fetchAll(PDO::FETCH_ASSOC);
                                            onclick="return confirm('Hapus karyawan <?php echo addslashes($k['nama_lengkap']); ?>?')">
                                             <i class="bi bi-trash"></i>
                                         </a>
-                                        <a href="reset_password.php?id=<?php echo $k['id_user']; ?>" 
-                                           class="btn btn-secondary btn-sm"
-                                           onclick="return confirm('Reset password <?php echo addslashes($k['nama_lengkap']); ?> ke default?')"
-                                           title="Reset Password">
-                                            <i class="bi bi-key"></i>
-                                        </a>
                                     </td>
                                 </tr>
                                 <?php endforeach; ?>
