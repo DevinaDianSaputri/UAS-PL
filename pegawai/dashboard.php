@@ -5,17 +5,17 @@ if (!isLoggedIn() || !isPegawai()) {
     exit();
 }
 
-$user_id = $_SESSION['user_id'];
+$user_id = $_SESSION['id_user'];
 
 try {
     // Query untuk draft pengajuan user
     $sql_draft = "
         SELECT pc.*, jc.nama_jenis, d.nama_departemen
         FROM pengajuan_cuti pc 
-        JOIN jenis_cuti jc ON pc.jenis_cuti_id = jc.id 
-        JOIN users u ON pc.user_id = u.id
-        JOIN departemen d ON u.departemen_id = d.id
-        WHERE pc.user_id = :user_id AND pc.status = 'draft'
+        JOIN jenis_cuti jc ON pc.id_jenis = jc.id_jenis 
+        JOIN users u ON pc.id_user = u.id
+        JOIN departemen d ON u.id_departemen = d.id
+        WHERE pc.id_user = :user_id AND pc.status = 'draft'
         ORDER BY pc.dibuat_pada DESC
     ";
     $stmt_draft = $pdo->prepare($sql_draft);
