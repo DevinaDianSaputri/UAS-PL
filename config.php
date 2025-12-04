@@ -16,7 +16,7 @@ try {
 
 // Function untuk check login
 function isLoggedIn() {
-    return isset($_SESSION['user_id']);
+    return isset($_SESSION['id_user']);
 }
 
 function isAdmin() {
