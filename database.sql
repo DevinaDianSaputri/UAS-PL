@@ -52,17 +52,18 @@ INSERT INTO departemen (nama_departemen) VALUES
 ('Marketing'),
 ('Produksi'),
 ('Logistik');
-INSERT INTO users (nip, password, nama_lengkap, email, no_telp, role, departemen_id) VALUES 
+INSERT INTO users (nip, password, nama_lengkap, email, no_telp, role, id_departemen) VALUES 
 ('001001', 'admin001', 'Ahmad Wijaya', 'ahmad.wijaya@perusahaan.com', '081234567890', 'admin', 1),
 ('001002', 'admin002', 'Sari Dewi', 'sari.dewi@perusahaan.com', '081234567891', 'admin', 1),
 ('001003', 'admin003', 'Rizki Pratama', 'rizki.pratama@perusahaan.com', '081234567892', 'admin', 1),
 ('002001', 'user2001', 'Budi Santoso', 'budi.santoso@perusahaan.com', '081234567893', 'pegawai', 2),
 ('002002', 'user2002', 'Siti Rahayu', 'siti.rahayu@perusahaan.com', '081234567894', 'pegawai', 3),
 ('002003', 'user2003', 'Dian Permata', 'dian.permata@perusahaan.com', '081234567895', 'pegawai', 4);
-INSERT INTO jenis_cuti (nama_jenis, deskripsi, maksimal_hari) VALUES 
+INSERT INTO jenis_cuti (nama_jenis, deskripsi_cuti, maks_hari) VALUES 
 ('Cuti Tahunan', 'Cuti tahunan yang diberikan kepada karyawan', 12),
 ('Cuti Sakit', 'Cuti karena sakit dengan surat dokter', 30),
 ('Cuti Melahirkan', 'Cuti untuk karyawan yang melahirkan', 90),
 ('Cuti Penting', 'Cuti untuk keperluan penting keluarga', 3),
 ('Cuti Bersalin', 'Cuti untuk istri yang melahirkan', 2),
 ('Cuti Alasan Penting', 'Cuti karena alasan penting lainnya', 14);
+
