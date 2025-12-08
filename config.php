@@ -18,15 +18,14 @@ try {
 function isLoggedIn() {
     return isset($_SESSION['id_user']);
 }
-
+// Function untuk check role
 function isAdmin() {
     return isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
 }
-
 function isPegawai() {
     return isset($_SESSION['role']) && $_SESSION['role'] === 'pegawai';
 }
-
+// Function untuk check registrasi
 function canRegister() {
     return true;
 }
