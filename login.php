@@ -88,9 +88,9 @@ if ($_POST) {
                             <button type="submit" class="btn btn-primary w-100">Login</button>
                         </form>
                         
-                        <!-- <div class="text-center mt-3">
+                        <div class="text-center mt-3">
                             <p>Pegawai baru? <a href="register.php">Daftar akun di sini</a></p>
-                        </div> -->
+                        </div>
                     </div>
                 </div>
             </div>
