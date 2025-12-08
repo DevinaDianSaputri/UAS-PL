@@ -109,11 +109,6 @@ $karyawan = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <div class="card mb-3">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">Kelola Karyawan</h5>
-                <div>
-                    <a href="tambah_karyawan.php" class="btn btn-primary btn-sm">
-                        <i class="bi bi-person-plus"></i> Tambah Karyawan
-                    </a>
-                </div>
             </div>
             <div class="card-body">
                 <!-- Form Pencarian -->
@@ -213,9 +208,6 @@ $karyawan = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 Mulai dengan menambahkan karyawan baru
                             <?php endif; ?>
                         </p>
-                        <a href="tambah_karyawan.php" class="btn btn-primary">
-                            <i class="bi bi-person-plus"></i> Tambah Karyawan
-                        </a>
                         <?php if (!empty($search)): ?>
                             <a href="karyawan.php" class="btn btn-outline-secondary ms-2">
                                 <i class="bi bi-arrow-counterclockwise"></i> Tampilkan Semua
