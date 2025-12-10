@@ -191,6 +191,9 @@ $karyawan = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             </tbody>
                         </table>
                     </div>
+                    <a href="../dashboard.php" class="btn btn-primary mt-2">
+                        <i class="bi bi-arrow-left"></i> Kembali ke Dashboard
+                    </a>
                 <?php else: ?>
                     <div class="text-center py-4">
                         <i class="bi bi-people display-1 text-muted"></i>
