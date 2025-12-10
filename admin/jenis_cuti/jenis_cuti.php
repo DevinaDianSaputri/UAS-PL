@@ -113,6 +113,9 @@ $jenis_cuti = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             </tbody>
                         </table>
                     </div>
+                    <a href="../dashboard.php" class="btn btn-primary mt-2">
+                        <i class="bi bi-arrow-left"></i> Kembali ke Dashboard
+                    </a>
                 <?php else: ?>
                     <div class="text-center py-5">
                         <i class="bi bi-clipboard-x" style="font-size: 4rem; color: #dee2e6;"></i>
