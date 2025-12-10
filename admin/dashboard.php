@@ -1,13 +1,65 @@
 <?php
-session_start(); // Tambahkan ini
+session_start();
 include '../config.php';
 if (!isLoggedIn() || !isAdmin()) {
     header("Location: ../login.php");
     exit();
 }
 
+// Proses approval/reject jika ada form submission
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
+    $id_pengajuan = $_POST['id_pengajuan'];
+    $action = $_POST['action']; // 'approve' atau 'reject'
+    $alasan_admin = trim($_POST['alasan_admin'] ?? '');
+
+    // Validasi action
+    if (!in_array($action, ['approve', 'reject'])) {
+        $_SESSION['error'] = "Aksi tidak valid!";
+        header("Location: dashboard.php");
+        exit();
+    }
+
+    // Validasi alasan untuk reject
+    if ($action == 'reject' && empty($alasan_admin)) {
+        $_SESSION['error'] = "Harap berikan alasan penolakan!";
+        header("Location: dashboard.php");
+        exit();
+    }
+
+    // Update status berdasarkan action
+    if ($action == 'approve') {
+        $status = 'disetujui';
+        $message = "Pengajuan cuti berhasil disetujui!";
+        // Untuk approve, alasan boleh kosong
+        if (empty($alasan_admin)) {
+            $alasan_admin = "Pengajuan cuti telah disetujui.";
+        }
+    } else {
+        $status = 'ditolak';
+        $message = "Pengajuan cuti berhasil ditolak!";
+    }
+
+    // Update data pengajuan
+    $sql = "UPDATE pengajuan_cuti 
+            SET status = ?, 
+                alasan_admin = ?,
+                tanggal_disetujui = NOW()
+            WHERE id_pengajuan = ? AND status = 'pending'";
+    
+    $stmt = $pdo->prepare($sql);
+
+    if ($stmt->execute([$status, $alasan_admin, $id_pengajuan])) {
+        $_SESSION['success'] = $message;
+    } else {
+        $_SESSION['error'] = "Gagal memproses pengajuan!";
+    }
+
+    header("Location: dashboard.php");
+    exit();
+}
+
 try {
-    // Query untuk pengajuan yang belum diproses (pending)
+    // Query untuk pengajuan yang belum diproses (pending) dengan lampiran
     $sql_pending = "
         SELECT pc.*, u.nama_lengkap, u.nip, u.email, d.nama_departemen, jc.nama_jenis 
         FROM pengajuan_cuti pc 
@@ -84,6 +136,22 @@ try {
         .menu-icon {
             font-size: 2rem;
             margin-bottom: 10px;
+        }
+
+        .badge-file {
+            font-size: 0.75rem;
+            padding: 4px 8px;
+        }
+        
+        .table-actions {
+            white-space: nowrap;
+        }
+        
+        .alasan-preview {
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
     </style>
 </head>
@@ -179,7 +247,8 @@ try {
                                     <th>Jenis Cuti</th>
                                     <th>Tanggal</th>
                                     <th>Durasi</th>
-                                    <th>Status</th>
+                                    <th>Lampiran</th>
+                                    <th>Alasan</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -201,21 +270,103 @@ try {
                                         </td>
                                         <td><?php echo $jumlah_hari; ?> hari</td>
                                         <td>
-                                            <span class="badge bg-warning status-badge">Pending</span>
+                                            <?php if ($row['lampiran']): ?>
+                                                <a href="../uploads/<?php echo $row['lampiran']; ?>" 
+                                                   target="_blank" class="badge bg-info text-decoration-none badge-file">
+                                                    <i class="bi bi-paperclip"></i> Lihat
+                                                </a>
+                                            <?php else: ?>
+                                                <span class="text-muted">-</span>
+                                            <?php endif; ?>
                                         </td>
-                                        <td class="action-buttons">
-                                            <a href="process_pengajuan.php?id=<?php echo $row['id_pengajuan']; ?>&action=approve" 
-                                               class="btn btn-success btn-sm" 
-                                               onclick="return confirm('Setujui pengajuan ini?')">
+                                        <td>
+                                            <span class="alasan-preview" title="<?php echo htmlspecialchars($row['alasan']); ?>">
+                                                <?php 
+                                                $alasan = htmlspecialchars($row['alasan']);
+                                                echo strlen($alasan) > 30 ? substr($alasan, 0, 30) . '...' : $alasan;
+                                                ?>
+                                            </span>
+                                        </td>
+                                        <td class="table-actions">
+                                            <!-- Tombol Setujui -->
+                                            <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" 
+                                                    data-bs-target="#approveModal<?php echo $row['id_pengajuan']; ?>">
                                                 Setujui
-                                            </a>
-                                            <a href="process_pengajuan.php?id=<?php echo $row['id_pengajuan']; ?>&action=reject" 
-                                               class="btn btn-danger btn-sm" 
-                                               onclick="return confirm('Tolak pengajuan ini?')">
+                                            </button>
+                                            
+                                            <!-- Tombol Tolak -->
+                                            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" 
+                                                    data-bs-target="#rejectModal<?php echo $row['id_pengajuan']; ?>">
                                                 Tolak
-                                            </a>
+                                            </button>
                                         </td>
                                     </tr>
+
+                                    <!-- Modal Setujui -->
+                                    <div class="modal fade" id="approveModal<?php echo $row['id_pengajuan']; ?>" tabindex="-1">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <form method="POST">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Setujui Pengajuan</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p>Setujui pengajuan cuti dari:</p>
+                                                        <p><strong><?php echo htmlspecialchars($row['nama_lengkap']); ?></strong></p>
+                                                        <p>Jenis: <?php echo htmlspecialchars($row['nama_jenis']); ?></p>
+                                                        <p>Tanggal: <?php echo date('d/m/Y', strtotime($row['tanggal_mulai'])); ?> - <?php echo date('d/m/Y', strtotime($row['tanggal_selesai'])); ?></p>
+                                                        <p>Alasan: <?php echo htmlspecialchars($row['alasan']); ?></p>
+                                                        
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Komentar (Opsional)</label>
+                                                            <textarea class="form-control" name="alasan_admin" rows="3" placeholder="Berikan komentar..."></textarea>
+                                                        </div>
+                                                        
+                                                        <input type="hidden" name="id_pengajuan" value="<?php echo $row['id_pengajuan']; ?>">
+                                                        <input type="hidden" name="action" value="approve">
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                        <button type="submit" class="btn btn-success">Setujui</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Modal Tolak -->
+                                    <div class="modal fade" id="rejectModal<?php echo $row['id_pengajuan']; ?>" tabindex="-1">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <form method="POST">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Tolak Pengajuan</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p>Tolak pengajuan cuti dari:</p>
+                                                        <p><strong><?php echo htmlspecialchars($row['nama_lengkap']); ?></strong></p>
+                                                        <p>Jenis: <?php echo htmlspecialchars($row['nama_jenis']); ?></p>
+                                                        <p>Tanggal: <?php echo date('d/m/Y', strtotime($row['tanggal_mulai'])); ?> - <?php echo date('d/m/Y', strtotime($row['tanggal_selesai'])); ?></p>
+                                                        <p>Alasan: <?php echo htmlspecialchars($row['alasan']); ?></p>
+                                                        
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Alasan Penolakan <span class="text-danger">*</span></label>
+                                                            <textarea class="form-control" name="alasan_admin" rows="3" placeholder="Berikan alasan penolakan..." required></textarea>
+                                                        </div>
+                                                        
+                                                        <input type="hidden" name="id_pengajuan" value="<?php echo $row['id_pengajuan']; ?>">
+                                                        <input type="hidden" name="action" value="reject">
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                        <button type="submit" class="btn btn-danger">Tolak</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
                                 <?php endwhile; ?>
                             </tbody>
                         </table>
@@ -228,5 +379,6 @@ try {
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
 </body>
 </html>
