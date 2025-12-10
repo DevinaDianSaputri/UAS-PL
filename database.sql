@@ -67,3 +67,6 @@ INSERT INTO jenis_cuti (nama_jenis, deskripsi_cuti, maks_hari) VALUES
 ('Cuti Bersalin', 'Cuti untuk istri yang melahirkan', 2),
 ('Cuti Alasan Penting', 'Cuti karena alasan penting lainnya', 14);
 
+INSERT INTO pengajuan_cuti (id_user, id_jenis, tanggal_mulai, tanggal_selesai, alasan, lampiran, status) VALUES 
+(5, 2, '2024-08-10', '2024-08-15', 'Sakit demam tinggi', 'surat_dokter.pdf', 'disetujui'),
+(6, 3, '2024-09-20', '2024-12-20', 'Melahirkan anak pertama', NULL, 'pending');

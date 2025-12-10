@@ -7,12 +7,13 @@ if (!isLoggedIn() || !isAdmin()) {
     exit();
 }
 
-// Ambil semua pengajuan
+// Ambil semua pengajuan dengan data approval
 $sql = "SELECT pc.*, u.nama_lengkap, u.nip, d.nama_departemen, jc.nama_jenis 
         FROM pengajuan_cuti pc 
         JOIN users u ON pc.id_user = u.id_user 
         JOIN departemen d ON u.id_departemen = d.id_departemen
         JOIN jenis_cuti jc ON pc.id_jenis = jc.id_jenis 
+        WHERE pc.status IN ('disetujui', 'ditolak')
         ORDER BY pc.dibuat_pada DESC";
 $stmt = $pdo->prepare($sql);
 $stmt->execute();
@@ -43,6 +44,7 @@ $pengajuan = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         .status-badge {
             font-size: 0.75rem;
+            padding: 0.35em 0.65em;
         }
 
         .badge-disetujui {
@@ -55,6 +57,26 @@ $pengajuan = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         .badge-pending {
             background-color: #ffc107;
+        }
+
+        .badge-draft {
+            background-color: #6c757d;
+        }
+        
+        .alasan-preview {
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .alasan-admin-preview {
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #666;
+            font-style: italic;
         }
     </style>
 </head>
@@ -72,15 +94,16 @@ $pengajuan = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <a class="nav-link" href="departemen/departemen.php">Departemen</a>
                 <a class="nav-link" href="karyawan/karyawan.php">Karyawan</a>
                 <a class="nav-link active" href="histori.php">Histori</a>
-                <a class="nav-link" href="../logout.php">Logout</a>
+                <a class="nav-link" href="logout.php">Logout</a>
             </div>
         </div>
     </nav>
 
     <div class="container mt-4">
         <div class="card">
-            <div class="card-header">
+            <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">Histori Semua Pengajuan Cuti</h5>
+                <span class="badge bg-primary"><?php echo count($pengajuan); ?> Total Pengajuan</span>
             </div>
             <div class="card-body">
                 <?php if (count($pengajuan) > 0): ?>
@@ -95,8 +118,9 @@ $pengajuan = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <th>Jenis Cuti</th>
                                     <th>Tanggal Cuti</th>
                                     <th>Durasi</th>
-                                    <th>Tanggal Pengajuan</th>
+                                    <th>Alasan</th>
                                     <th>Status</th>
+                                    <th>Info Approval</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -118,6 +142,9 @@ $pengajuan = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         case 'pending':
                                             $badge_class = 'badge-pending';
                                             break;
+                                        case 'draft':
+                                            $badge_class = 'badge-draft';
+                                            break;
                                         default:
                                             $badge_class = 'bg-secondary';
                                     }
@@ -133,25 +160,59 @@ $pengajuan = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                             <small>s/d <?php echo date('d/m/Y', strtotime($row['tanggal_selesai'])); ?></small>
                                         </td>
                                         <td><?php echo $jumlah_hari; ?> hari</td>
-                                        <td><?php echo date('d/m/Y H:i', strtotime($row['dibuat_pada'])); ?></td>
+                                        <td>
+                                            <span class="alasan-preview" title="<?php echo htmlspecialchars($row['alasan']); ?>">
+                                                <?php 
+                                                $alasan = htmlspecialchars($row['alasan']);
+                                                echo strlen($alasan) > 30 ? substr($alasan, 0, 30) . '...' : $alasan;
+                                                ?>
+                                            </span>
+                                        </td>
                                         <td>
                                             <span class="badge status-badge <?php echo $badge_class; ?>">
                                                 <?php echo ucfirst($row['status']); ?>
                                             </span>
+                                        </td>
+                                        <td>
+                                            <?php if ($row['status'] == 'disetujui' || $row['status'] == 'ditolak'): ?>
+                                                <div class="small">
+                                                    <div><?php echo $row['tanggal_disetujui'] ? date('d/m/Y H:i', strtotime($row['tanggal_disetujui'])) : '-'; ?></div>
+                                                    <?php if ($row['alasan_admin']): ?>
+                                                        <div class="alasan-admin-preview" title="<?php echo htmlspecialchars($row['alasan_admin']); ?>">
+                                                            <?php 
+                                                            $alasan_admin = htmlspecialchars($row['alasan_admin']);
+                                                            echo strlen($alasan_admin) > 30 ? substr($alasan_admin, 0, 30) . '...' : $alasan_admin;
+                                                            ?>
+                                                        </div>
+                                                    <?php endif; ?>
+                                                </div>
+                                            <?php elseif ($row['status'] == 'pending'): ?>
+                                                <span class="text-muted">Menunggu</span>
+                                            <?php else: ?>
+                                                <span class="text-muted">Draft</span>
+                                            <?php endif; ?>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>
                         </table>
                     </div>
+                    <a href="dashboard.php" class="btn btn-primary mt-2">
+                        <i class="bi bi-arrow-left"></i> Kembali ke Dashboard
+                    </a>
                 <?php else: ?>
-                    <p class="text-muted text-center py-3">Belum ada pengajuan cuti.</p>
+                    <div class="text-center py-5">
+                        <i class="bi bi-clock-history" style="font-size: 4rem; color: #dee2e6;"></i>
+                        <h5 class="text-muted mt-3">Belum ada histori pengajuan</h5>
+                        <p class="text-muted">Semua pengajuan cuti akan muncul di sini</p>
+                    </div>
                 <?php endif; ?>
             </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
 </body>
 
 </html>
