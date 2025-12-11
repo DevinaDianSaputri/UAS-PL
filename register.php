@@ -16,6 +16,7 @@ try {
     $sql_departemen = "SELECT * FROM departemen ORDER BY nama_departemen";
     $stmt_departemen = $pdo->prepare($sql_departemen);
     $stmt_departemen->execute();
+    $departemen_list = $stmt_departemen->fetchAll(PDO::FETCH_ASSOC);
 
     $error = '';
     $success = '';
@@ -27,7 +28,7 @@ try {
         $nama_lengkap = $_POST['nama_lengkap'];
         $email = $_POST['email'];
         $no_telp = $_POST['no_telp'];
-        $departemen_id = $_POST['departemen_id'];
+        $id_departemen = $_POST['id_departemen'];
 
         // Validasi
         if (empty($nip) || empty($password) || empty($nama_lengkap) || empty($email) || empty($no_telp)) {
@@ -38,7 +39,7 @@ try {
             $error = "Password minimal 6 karakter!";
         } else {
             // Validasi NIP unik
-            $sql_check_nip = "SELECT id FROM users WHERE nip = :nip";
+            $sql_check_nip = "SELECT id_user FROM users WHERE nip = :nip";
             $stmt_check_nip = $pdo->prepare($sql_check_nip);
             $stmt_check_nip->bindParam(':nip', $nip);
             $stmt_check_nip->execute();
@@ -47,7 +48,7 @@ try {
                 $error = "NIP sudah digunakan!";
             } else {
                 // Validasi email unik
-                $sql_check_email = "SELECT id FROM users WHERE email = :email";
+                $sql_check_email = "SELECT id_user FROM users WHERE email = :email";
                 $stmt_check_email = $pdo->prepare($sql_check_email);
                 $stmt_check_email->bindParam(':email', $email);
                 $stmt_check_email->execute();
@@ -55,20 +56,25 @@ try {
                 if ($stmt_check_email->rowCount() > 0) {
                     $error = "Email sudah digunakan!";
                 } else {
+                    // Hash password
+                    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+                    
                     // Insert user baru
-                    $sql = "INSERT INTO users (nip, password, nama_lengkap, email, no_telp, role, departemen_id) 
-                            VALUES (:nip, :password, :nama_lengkap, :email, :no_telp, 'pegawai', :departemen_id)";
+                    $sql = "INSERT INTO users (nip, password, nama_lengkap, email, no_telp, role, id_departemen) 
+                            VALUES (:nip, :password, :nama_lengkap, :email, :no_telp, 'pegawai', :id_departemen)";
                     
                     $stmt = $pdo->prepare($sql);
                     $stmt->bindParam(':nip', $nip);
-                    $stmt->bindParam(':password', $password);
+                    $stmt->bindParam(':password', $hashed_password);
                     $stmt->bindParam(':nama_lengkap', $nama_lengkap);
                     $stmt->bindParam(':email', $email);
                     $stmt->bindParam(':no_telp', $no_telp);
-                    $stmt->bindParam(':departemen_id', $departemen_id);
+                    $stmt->bindParam(':id_departemen', $id_departemen);
                     
                     if ($stmt->execute()) {
                         $success = "Pendaftaran berhasil! Silakan login dengan NIP dan password Anda.";
+                        // Reset form
+                        $_POST = array();
                     } else {
                         $error = "Gagal mendaftar! Silakan coba lagi.";
                     }
@@ -115,13 +121,13 @@ try {
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label class="form-label">Departemen</label>
-                                        <select name="departemen_id" class="form-select" required>
+                                        <select name="id_departemen" class="form-select" required>
                                             <option value="">Pilih Departemen</option>
-                                            <?php while ($dept = $stmt_departemen->fetch(PDO::FETCH_ASSOC)): ?>
-                                                <option value="<?php echo $dept['id']; ?>" <?php echo (isset($_POST['departemen_id']) && $_POST['departemen_id'] == $dept['id']) ? 'selected' : ''; ?>>
+                                            <?php foreach ($departemen_list as $dept): ?>
+                                                <option value="<?php echo $dept['id_departemen']; ?>" <?php echo (isset($_POST['id_departemen']) && $_POST['id_departemen'] == $dept['id_departemen']) ? 'selected' : ''; ?>>
                                                     <?php echo htmlspecialchars($dept['nama_departemen']); ?>
                                                 </option>
-                                            <?php endwhile; ?>
+                                            <?php endforeach; ?>
                                         </select>
                                     </div>
                                 </div>
