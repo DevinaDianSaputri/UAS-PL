@@ -69,7 +69,7 @@ if ($_POST) {
             <div class="col-md-4">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="text-center">Login Sistem Cuti</h4>
+                        <h4 class="text-center">Login</h4>
                     </div>
                     <div class="card-body">
                         <?php if (isset($error)): ?>
