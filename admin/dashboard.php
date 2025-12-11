@@ -85,6 +85,7 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Admin - Sistem Cuti</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
     <style>
         body {
             background-color: #f8f9fa;
@@ -136,6 +137,24 @@ try {
         .menu-icon {
             font-size: 2rem;
             margin-bottom: 10px;
+            color: #0d6efd;
+        }
+
+        /* Warna khusus untuk setiap ikon */
+        .icon-jenis-cuti {
+            color: #28a745; /* Hijau */
+        }
+        
+        .icon-departemen {
+            color: #17a2b8; /* Biru cerah */
+        }
+        
+        .icon-karyawan {
+            color: #6f42c1; /* Ungu */
+        }
+        
+        .icon-histori {
+            color: #dc3545; /* Merah */
         }
 
         .badge-file {
@@ -193,36 +212,36 @@ try {
             <div class="col-md-3 mb-3">
                 <a href="jenis_cuti/jenis_cuti.php" class="text-decoration-none">
                     <div class="card menu-card text-center p-4">
-                        <div class="menu-icon">📋</div>
+                        <div class="menu-icon icon-jenis-cuti"><i class="bi bi-calendar-check"></i></div>
                         <h5>Jenis Cuti</h5>
-                        <p class="text-muted">Kelola jenis cuti</p>
+                        <p class="text-muted">Atur kategori cuti</p>
                     </div>
                 </a>
             </div>
             <div class="col-md-3 mb-3">
                 <a href="departemen/departemen.php" class="text-decoration-none">
                     <div class="card menu-card text-center p-4">
-                        <div class="menu-icon">🏢</div>
+                        <div class="menu-icon icon-departemen"><i class="bi bi-diagram-3"></i></div>
                         <h5>Departemen</h5>
-                        <p class="text-muted">Kelola departemen</p>
+                        <p class="text-muted">Kelola struktur organisasi</p>
                     </div>
                 </a>
             </div>
             <div class="col-md-3 mb-3">
                 <a href="karyawan/karyawan.php" class="text-decoration-none">
                     <div class="card menu-card text-center p-4">
-                        <div class="menu-icon">👥</div>
+                        <div class="menu-icon icon-karyawan"><i class="bi bi-person-badge"></i></div>
                         <h5>Karyawan</h5>
-                        <p class="text-muted">Kelola data karyawan</p>
+                        <p class="text-muted">Kelola data pegawai</p>
                     </div>
                 </a>
             </div>
             <div class="col-md-3 mb-3">
                 <a href="histori.php" class="text-decoration-none">
                     <div class="card menu-card text-center p-4">
-                        <div class="menu-icon">📊</div>
+                        <div class="menu-icon icon-histori"><i class="bi bi-journal-text"></i></div>
                         <h5>Histori</h5>
-                        <p class="text-muted">Lihat semua pengajuan</p>
+                        <p class="text-muted">Riwayat pengajuan cuti</p>
                     </div>
                 </a>
             </div>
@@ -379,6 +398,5 @@ try {
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
 </body>
 </html>
