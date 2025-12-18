@@ -83,7 +83,7 @@ $departemen = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">Kelola Departemen</h5>
-                <a href="tambah_departemen.php" class="btn btn-primary btn-sm">
+                <a href="tambah_dept.php" class="btn btn-primary btn-sm">
                     <i class="bi bi-plus-circle"></i> Tambah Departemen
                 </a>
             </div>
@@ -110,11 +110,11 @@ $departemen = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                             </span>
                                         </td>
                                         <td>
-                                            <a href="edit_departemen.php?id=<?php echo $dept['id_departemen']; ?>"
+                                            <a href="edit_dept.php?id=<?php echo $dept['id_departemen']; ?>"
                                                 class="btn btn-warning btn-sm">
                                                 <i class="bi bi-pencil"></i> Edit
                                             </a>
-                                            <a href="hapus_departemen.php?id=<?php echo $dept['id_departemen']; ?>"
+                                            <a href="hapus_dept.php?id=<?php echo $dept['id_departemen']; ?>"
                                                 class="btn btn-danger btn-sm"
                                                 onclick="return confirm('Hapus departemen <?php echo addslashes($dept['nama_departemen']); ?>? Karyawan dalam departemen ini akan kehilangan departemennya.')">
                                                 <i class="bi bi-trash"></i> Hapus
@@ -133,7 +133,7 @@ $departemen = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <i class="bi bi-building display-1 text-muted"></i>
                         <h5 class="mt-3">Belum ada departemen</h5>
                         <p class="text-muted">Mulai dengan menambahkan departemen baru</p>
-                        <a href="tambah_departemen.php" class="btn btn-primary">
+                        <a href="tambah_dept.php" class="btn btn-primary">
                             <i class="bi bi-plus-circle"></i> Tambah Departemen
                         </a>
                     </div>
